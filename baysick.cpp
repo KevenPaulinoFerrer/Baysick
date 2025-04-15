@@ -16,17 +16,23 @@ string SearchCommand(string &input)
     // size_t = always non-negative/usesd to represent numeric values that cannot be negative: size,indexes, etc.
     size_t begin, end;
     string command;
+    string valChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    begin = input.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    begin = input.find_first_of(valChar);
     if (begin != string::npos)
     {
         input = input.substr(begin, string::npos); // string::npos = used to declare "until the end of the string"
-    }
-    begin = input.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    end = input.find_first_of(" ");
 
-    command = input.substr(begin, end);
-    input.erase(begin, end);
+        begin = input.find_first_of(valChar);
+        end = input.find_first_of(" ");
+
+        command = input.substr(begin, end);
+        input.erase(begin, end);
+    }
+    else
+    {
+        input.clear();
+    }
 
     return command;
 }
@@ -70,8 +76,13 @@ int main()
 
     cout << sym;
     getline(cin, input);
-
     InitCommand(att, input, func);
+
+    cout << '\n';
+    for (string a : att)
+    {
+        cout << a << '\n';
+    }
 
     return 0;
 }
