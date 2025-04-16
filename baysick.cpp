@@ -7,10 +7,19 @@
 #include <functional>
 using std::cin, std::cout, std::string, std::map, std::vector;
 
-void Hello()
+void Hello(vector<string> att)
 {
-    cout << "Hello World";
+
+    if (!att.empty() && att.at(0) == "help")
+    {
+        cout << "*Function name* - No parameters";
+    }
+    else
+    {
+        cout << "Hello World\n";
+    }
 }
+
 string SearchCommand(string &input)
 {
     // size_t = always non-negative/usesd to represent numeric values that cannot be negative: size,indexes, etc.
@@ -36,6 +45,7 @@ string SearchCommand(string &input)
 
     return command;
 }
+
 void SearchAtt(vector<string> &att, string &input)
 {
     // size_t = always non-negative/used to represent numeric values that cannot be negative: size,indexes, etc.
@@ -47,42 +57,63 @@ void SearchAtt(vector<string> &att, string &input)
         }
     }
 }
-void FuncExists(map<string, std::function<void()>> func, string action)
+
+int FuncExists(map<string, std::function<void(vector<string>)>> func1, string action)
 {
-    auto it = func.find(action);
-    if (it != func.end())
+    int found;
+
+    auto it = func1.find(action);
+    if (it != func1.end())
     {
-        func.at(action)();
+        found = 0;
     }
     else
     {
-        cout << "Error: Function does not exist";
+        found = 1;
+        cout << "Error: Function does not exist\n";
     }
+    return found;
 }
-void InitCommand(vector<string> &att, string &input, map<string, std::function<void()>> func)
+
+bool InitCommand(vector<string> &att, string &input, map<string, std::function<void(vector<string>)>> func1)
 {
+    bool close = true;
     string action = SearchCommand(input);
-    SearchAtt(att, input);
-    FuncExists(func, action);
+    if (action != "close")
+    {
+        SearchAtt(att, input);
+        if (FuncExists(func1, action) != 1)
+        {
+            func1.at(action)(att);
+        }
+    }
+    else
+    {
+        close = false;
+    }
+    return close;
 }
+
 int main()
 {
-    map<string, std::function<void()>> func;
-    func["Hello"] = Hello;
+
+    map<string, std::function<void(vector<string>)>> func;
+    func["hello"] = Hello;
 
     vector<string> att;
     string sym = "!~~ ";
     string input;
 
-    cout << sym;
-    getline(cin, input);
-    InitCommand(att, input, func);
-
-    cout << '\n';
-    for (string a : att)
+    do
     {
-        cout << a << '\n';
-    }
+        cout << sym;
+        getline(cin, input);
+        if (input.find("close") == string::npos)
+        {
+            cout << sym;
+        }
+
+    } while (InitCommand(att, input, func) == true);
 
     return 0;
 }
