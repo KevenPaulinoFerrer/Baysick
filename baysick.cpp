@@ -77,7 +77,7 @@ int FuncExists(map<string, std::function<void(vector<string>)>> func1, string ac
 
 bool InitCommand(vector<string> &att, string &input, map<string, std::function<void(vector<string>)>> func1)
 {
-    bool close = true;
+    bool close = false;
     string action = SearchCommand(input);
     if (action != "close")
     {
@@ -89,7 +89,7 @@ bool InitCommand(vector<string> &att, string &input, map<string, std::function<v
     }
     else
     {
-        close = false;
+        close = true;
     }
     return close;
 }
@@ -113,7 +113,7 @@ int main()
             cout << sym;
         }
 
-    } while (InitCommand(att, input, func) == true);
+    } while (InitCommand(att, input, func) == false);
 
     return 0;
 }
