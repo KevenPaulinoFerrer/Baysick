@@ -63,18 +63,17 @@ bool FuncExists(map<string, std::function<void(vector<string>)>> func1, string a
     return found;
 }
 
-bool PathExists(vector<string> att)
+bool PathExists(std::filesystem::path path)
 {
+    path = path.make_preferred();
     bool exists = false;
-    for (string path : att)
+
+    std::filesystem::directory_entry entry{path};
+    if (entry.exists())
     {
-        std::filesystem::directory_entry entry{path};
-        if (entry.exists())
-        {
-            exists = true;
-            break;
-        }
+        exists = true;
     }
+
     return exists;
 }
 
@@ -141,13 +140,13 @@ void NewDirectory(vector<string> att)
     for (std::filesystem::path path : att)
     {
         path = path.make_preferred();
-        if (PathExists(att) == false)
+        if (PathExists(path) == false)
         {
             std::filesystem::create_directories(path);
         }
         else
         {
-            cout << "The Directory: " << path << " already exists";
+            cout << "The Directory: " << path << " already exists ";
         }
     }
 }
@@ -156,13 +155,13 @@ void DeleteDirectory(vector<string> att)
     for (std::filesystem::path path : att)
     {
         path = path.make_preferred();
-        if (PathExists(att) == true)
+        if (PathExists(path) == true)
         {
             std::filesystem::remove_all(path);
         }
         else
         {
-            cout << "The Directory: " << path << "doesnt exists";
+            cout << "The Directory: " << path << "doesnt exists ";
         }
     }
 }
