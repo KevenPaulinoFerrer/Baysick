@@ -7,18 +7,9 @@
 #include <functional>
 using std::cin, std::cout, std::string, std::map, std::vector;
 
-void Hello(vector<string> att)
-{
-
-    if (!att.empty() && att.at(0) == "help")
-    {
-        cout << "*Function name* - No parameters";
-    }
-    else
-    {
-        cout << "Hello World\n";
-    }
-}
+void NewDirectory(vector<string> att);
+void DeleteDirectory(vector<string> att);
+void Hello(vector<string> att);
 
 string SearchCommand(string &input)
 {
@@ -58,21 +49,33 @@ void SearchAtt(vector<string> &att, string &input)
     }
 }
 
-int FuncExists(map<string, std::function<void(vector<string>)>> func1, string action)
+bool FuncExists(map<string, std::function<void(vector<string>)>> func1, string action)
 {
-    int found;
+    bool found = true;
 
     auto it = func1.find(action);
-    if (it != func1.end())
+    if (it == func1.end())
     {
-        found = 0;
-    }
-    else
-    {
-        found = 1;
+        found = false;
         cout << "Error: Function does not exist\n";
     }
+
     return found;
+}
+
+bool PathExists(vector<string> att)
+{
+    bool exists = false;
+    for (string path : att)
+    {
+        std::filesystem::directory_entry entry{path};
+        if (entry.exists())
+        {
+            exists = true;
+            break;
+        }
+    }
+    return exists;
 }
 
 bool InitCommand(vector<string> &att, string &input, map<string, std::function<void(vector<string>)>> func1)
@@ -82,7 +85,7 @@ bool InitCommand(vector<string> &att, string &input, map<string, std::function<v
     if (action != "close")
     {
         SearchAtt(att, input);
-        if (FuncExists(func1, action) != 1)
+        if (FuncExists(func1, action) != false)
         {
             func1.at(action)(att);
         }
@@ -91,6 +94,7 @@ bool InitCommand(vector<string> &att, string &input, map<string, std::function<v
     {
         close = true;
     }
+    att.clear();
     return close;
 }
 
@@ -98,6 +102,7 @@ int main()
 {
 
     map<string, std::function<void(vector<string>)>> func;
+    func["hello"] = Hello;
     func["hello"] = Hello;
 
     vector<string> att;
@@ -116,4 +121,48 @@ int main()
     } while (InitCommand(att, input, func) == false);
 
     return 0;
+}
+
+void Hello(vector<string> att)
+{
+
+    if (!att.empty() && att.at(0) == "help")
+    {
+        cout << "*Function name* - No parameters";
+    }
+    else
+    {
+        cout << "Hello World\n";
+    }
+}
+void NewDirectory(vector<string> att)
+{
+    // only path to new directory
+    for (std::filesystem::path path : att)
+    {
+        path = path.make_preferred();
+        if (PathExists(att) == false)
+        {
+            std::filesystem::create_directories(path);
+        }
+        else
+        {
+            cout << "The Directory: " << path << " already exists";
+        }
+    }
+}
+void DeleteDirectory(vector<string> att)
+{ // only path to existing directory
+    for (std::filesystem::path path : att)
+    {
+        path = path.make_preferred();
+        if (PathExists(att) == true)
+        {
+            std::filesystem::remove_all(path);
+        }
+        else
+        {
+            cout << "The Directory: " << path << "doesnt exists";
+        }
+    }
 }
