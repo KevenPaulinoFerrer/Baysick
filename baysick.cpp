@@ -11,6 +11,14 @@ void NewDirectory(vector<string> att);
 void DeleteDirectory(vector<string> att);
 void Hello(vector<string> att);
 
+string Help(string action)
+{
+    map<string, string> help;
+    help["hello"] = " * Function name * - No parameters\n";
+
+    return help.at(action);
+}
+
 string SearchCommand(string &input)
 {
     // size_t = always non-negative/usesd to represent numeric values that cannot be negative: size,indexes, etc.
@@ -77,16 +85,27 @@ bool PathExists(std::filesystem::path path)
     return exists;
 }
 
-bool InitCommand(vector<string> &att, string &input, map<string, std::function<void(vector<string>)>> func1)
+bool RootExists(std::filesystem::path root)
+{
+    root = root.root_path();
+    return PathExists(root) == true ? true : false;
+}
+
+bool InitCommand(vector<string> &att, string &input, map<string, std::function<void(vector<string>)>> func)
 {
     bool close = false;
     string action = SearchCommand(input);
+    bool funcStat = FuncExists(func, action);
     if (action != "close")
     {
         SearchAtt(att, input);
-        if (FuncExists(func1, action) != false)
+        if (funcStat != false && !att.empty() && att.at(0) == "help")
         {
-            func1.at(action)(att);
+            cout << Help(action);
+        }
+        else if (funcStat != false)
+        {
+            func.at(action)(att);
         }
     }
     else
@@ -102,7 +121,10 @@ int main()
 
     map<string, std::function<void(vector<string>)>> func;
     func["hello"] = Hello;
-    func["hello"] = Hello;
+    func["Ndirec"] = NewDirectory;
+    func["Ddirec"] = DeleteDirectory;
+    func["Mdirec"] = Hello;
+    func["Rdirec"] = Hello;
 
     vector<string> att;
     string sym = "!~~ ";
@@ -124,15 +146,7 @@ int main()
 
 void Hello(vector<string> att)
 {
-
-    if (!att.empty() && att.at(0) == "help")
-    {
-        cout << "*Function name* - No parameters";
-    }
-    else
-    {
-        cout << "Hello World\n";
-    }
+    cout << "Hello World\n";
 }
 void NewDirectory(vector<string> att)
 {
@@ -140,13 +154,17 @@ void NewDirectory(vector<string> att)
     for (std::filesystem::path path : att)
     {
         path = path.make_preferred();
-        if (PathExists(path) == false)
+        if (PathExists(path) == false && RootExists(path) == true)
         {
             std::filesystem::create_directories(path);
         }
+        else if (PathExists(path) == true)
+        {
+            cout << "The Directory: " << path << " already exists";
+        }
         else
         {
-            cout << "The Directory: " << path << " already exists ";
+            cout << "The root path: " << path.root_path() << " doesnt exists";
         }
     }
 }
@@ -164,4 +182,5 @@ void DeleteDirectory(vector<string> att)
             cout << "The Directory: " << path << "doesnt exists ";
         }
     }
+    cout << '\n';
 }
