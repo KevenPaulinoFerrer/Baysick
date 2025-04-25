@@ -205,11 +205,11 @@ void NewDirectory(vector<string> att)
         }
         else if (PathExists(path))
         {
-            cout << YELLOW << "Directory already exists: " << path << RESET << "\n";
+            cout << YELLOW << "ERROR: Directory already exists: " << path << RESET << "\n";
         }
         else
         {
-            cout << RED << "Root path does not exist: " << path.root_path() << RESET << "\n";
+            cout << RED << "ERROR: Root path does not exist: " << path.root_path() << RESET << "\n";
         }
     }
 }
@@ -222,12 +222,18 @@ void DeleteDirectory(vector<string> att)
         path = path.make_preferred();
         if (PathExists(path))
         {
-            std::filesystem::remove_all(path);
-            cout << GREEN << "Deleted directory: " << path << RESET << "\n";
+            if (std::filesystem::remove_all(path))
+            {
+                cout << GREEN << "Deleted directory: " << path << RESET << "\n";
+            }
+            else
+            {
+                cout << RED << " ERROR: Directory cannot be removed: " << path << RESET << "\n";
+            }
         }
         else
         {
-            cout << RED << "Directory does not exist: " << path << RESET << "\n";
+            cout << RED << "ERROR: Directory does not exist: " << path << RESET << "\n";
         }
     }
 }
@@ -239,7 +245,7 @@ void RenameDirectory(vector<string> att)
     std::filesystem::path nName;
     if (att.size() % 2 == 1)
     {
-        cout << RED << "Function needs an even number of arguments\n"
+        cout << RED << " ERROR: Function needs an even number of arguments\n"
              << RESET;
     }
     else
@@ -280,7 +286,7 @@ void MoveDirectory(vector<string> att)
 
     if (att.size() % 2 == 1)
     {
-        cout << RED << "Function needs an even number of arguments\n"
+        cout << RED << "ERROR: Function needs an even number of arguments\n"
              << RESET;
     }
     else
@@ -297,7 +303,14 @@ void MoveDirectory(vector<string> att)
                 try
                 {
                     std::filesystem::copy(fromPath, toPath, std::filesystem::copy_options::recursive);
-                    std::filesystem::remove_all(fromPath);
+                    if (std::filesystem::remove_all(fromPath))
+                    {
+                        cout << GREEN << "Deleted directory: " << fromPath << RESET << "\n";
+                    }
+                    else
+                    {
+                        cout << RED << " ERROR: Directory cannot be removed: " << fromPath << RESET << "\n";
+                    }
                     cout << GREEN << "Moved directory to: " << toPath << RESET << "\n";
                 }
                 catch (...)
@@ -328,7 +341,7 @@ void CreateFile(vector<string> att)
         }
         else
         {
-            cout << RED << "Failed to create file: " << path << RESET << "\n";
+            cout << RED << "ERROR: Failed to create file: " << path << RESET << "\n";
         }
     }
 }
@@ -350,7 +363,7 @@ void ReadFile(vector<string> att)
         }
         else
         {
-            cout << RED << "Failed to read file: " << path << RESET << "\n";
+            cout << RED << "ERROR: Failed to read file: " << path << RESET << "\n";
         }
     }
 }
@@ -360,7 +373,7 @@ void UpdateFile(vector<string> att)
 {
     if (att.size() < 2)
     {
-        cout << RED << "Need file path and content\n"
+        cout << RED << "ERROR: Need file path and content\n"
              << RESET;
         return;
     }
@@ -372,7 +385,7 @@ void UpdateFile(vector<string> att)
     }
     else
     {
-        cout << RED << "Failed to update file: " << att[0] << RESET << "\n";
+        cout << RED << "ERROR: Failed to update file: " << att[0] << RESET << "\n";
     }
 }
 
@@ -387,7 +400,7 @@ void DeleteFile(vector<string> att)
         }
         else
         {
-            cout << RED << "Failed to delete file: " << path << RESET << "\n";
+            cout << RED << "ERROR: Failed to delete file: " << path << RESET << "\n";
         }
     }
 }
