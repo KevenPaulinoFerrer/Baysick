@@ -128,8 +128,8 @@ int main()
     func["Ufile"] = UpdateFile;
     func["Dfile"] = DeleteFile;
     func["clear"] = ClearScreen;
-    func["ReadMe"] = Rreadme;
-    func["License"] = Rlicense;
+    func["readme"] = Rreadme;
+    func["license"] = Rlicense;
 
     vector<string> att;
     string sym = "!~~ ";
@@ -157,7 +157,7 @@ void Rreadme(vector<string> att)
 // Keven Paulino
 void Rlicense(vector<string> att)
 {
-    att.at(0) = "License.txt";
+    att.at(0) = "LICENSE";
     ReadFile(att);
 }
 // Help text
@@ -175,6 +175,8 @@ string Help(string action)
     help["Ufile"] = " * Function name *  file path ...\n";
     help["Dfile"] = " * Function name *  file path ...\n";
     help["clear"] = " * Function name *  No parameters\n";
+    help["readme"] = " * Function name *  No parameters\n";
+    help["license"] = " * Function name *  No parameters\n";
 
     return help.at(action);
 }
