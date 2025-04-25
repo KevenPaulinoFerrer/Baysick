@@ -32,6 +32,7 @@ void Rlicense(vector<string> att);
 string Help(string action);
 
 // Utility functions
+
 // Keven Paulino
 string SearchCommand(string &input)
 {
@@ -151,15 +152,17 @@ int main()
 // Keven Paulino
 void Rreadme(vector<string> att)
 {
-    att.at(0) = "README.md";
+    att.push_back("README.md");
     ReadFile(att);
 }
+
 // Keven Paulino
 void Rlicense(vector<string> att)
 {
-    att.at(0) = "LICENSE";
+    att.push_back("LICENSE");
     ReadFile(att);
 }
+
 // Help text
 // Keven Paulino
 string Help(string action)
