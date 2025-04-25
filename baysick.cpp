@@ -157,7 +157,7 @@ void Readme(vector<string> att)
 }
 
 // Keven Paulino
-void RLicense(vector<string> att)
+void License(vector<string> att)
 {
     att.push_back("LICENSE");
     ReadFile(att);
