@@ -5,44 +5,56 @@
 #include <vector>
 #include <filesystem>
 #include <functional>
+
 using std::cin, std::cout, std::string, std::map, std::vector;
 
+// Colors
+// Pedro Arraiza
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+
+// Function declarations
 void NewDirectory(vector<string> att);
 void DeleteDirectory(vector<string> att);
 void RenameDirectory(vector<string> att);
 void MoveDirectory(vector<string> att);
 void Hello(vector<string> att);
+void CreateFile(vector<string> att);
+void ReadFile(vector<string> att);
+void UpdateFile(vector<string> att);
+void DeleteFile(vector<string> att);
+void ClearScreen(vector<string> att);
+void Rreadme(vector<string> att);
+void Rlicense(vector<string> att);
 string Help(string action);
 
+// Utility functions
+// Keven Paulino
 string SearchCommand(string &input)
 {
-    // size_t = always non-negative/usesd to represent numeric values that cannot be negative: size,indexes, etc.
-    size_t begin, end;
-    string command;
-    string valChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    begin = input.find_first_of(valChar);
-    if (begin != string::npos)
-    {
-        input = input.substr(begin, string::npos); // string::npos = used to declare "until the end of the string"
-
-        begin = input.find_first_of(valChar);
-        end = input.find_first_of(" ");
-
-        command = input.substr(begin, end);
-        input.erase(begin, end);
-    }
-    else
+    size_t begin = input.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    if (begin == string::npos)
     {
         input.clear();
+        return "";
     }
 
+    input = input.substr(begin);
+    size_t end = input.find_first_of(" ");
+    if (end == string::npos)
+        end = input.length();
+
+    string command = input.substr(0, end);
+    input.erase(0, end + 1);
     return command;
 }
 
+// Keven Paulino
 void SearchAtt(vector<string> &att, string &input)
 {
-    // size_t = always non-negative/used to represent numeric values that cannot be negative: size,indexes, etc.
     for (size_t i = 1; i < 5; i++)
     {
         if (!input.empty())
@@ -52,74 +64,72 @@ void SearchAtt(vector<string> &att, string &input)
     }
 }
 
+// Keven Paulino
 bool FuncExists(map<string, std::function<void(vector<string>)>> func1, string action)
 {
-    bool found = true;
-
     auto it = func1.find(action);
     if (it == func1.end())
     {
-        found = false;
-        cout << "Error: Function does not exist\n";
+        cout << RED << "Error: Function does not exist\n"
+             << RESET;
+        return false;
     }
-
-    return found;
+    return true;
 }
 
+// Keven Paulino
 bool PathExists(std::filesystem::path path)
 {
     path = path.make_preferred();
-    bool exists = false;
-
-    std::filesystem::directory_entry entry{path};
-    if (entry.exists())
-    {
-        exists = true;
-    }
-
-    return exists;
+    return std::filesystem::directory_entry{path}.exists();
 }
 
+// Keven Paulino
 bool RootExists(std::filesystem::path root)
 {
     root = root.root_path();
-    return PathExists(root) == true ? true : false;
+    return PathExists(root);
 }
 
+// Keven Paulino
 bool InitCommand(vector<string> &att, string &input, map<string, std::function<void(vector<string>)>> func)
 {
-    bool close = false;
     string action = SearchCommand(input);
+    if (action == "close")
+        return true;
+
     bool funcStat = FuncExists(func, action);
-    if (action != "close")
+    SearchAtt(att, input);
+
+    if (funcStat && !att.empty() && att.at(0) == "help")
     {
-        SearchAtt(att, input);
-        if (funcStat != false && !att.empty() && att.at(0) == "help")
-        {
-            cout << Help(action);
-        }
-        else if (funcStat != false)
-        {
-            func.at(action)(att);
-        }
+        cout << Help(action);
     }
-    else
+    else if (funcStat)
     {
-        close = true;
+        func.at(action)(att);
     }
+
     att.clear();
-    return close;
+    return false;
 }
 
+// Main
 int main()
 {
-
     map<string, std::function<void(vector<string>)>> func;
     func["hello"] = Hello;
     func["Ndirec"] = NewDirectory;
     func["Ddirec"] = DeleteDirectory;
     func["Rdirec"] = RenameDirectory;
-    func["Mdirec"] = Hello;
+    func["Mdirec"] = MoveDirectory;
+    func["Cfile"] = CreateFile;
+    func["Rfile"] = ReadFile;
+    func["Ufile"] = UpdateFile;
+    func["Dfile"] = DeleteFile;
+    func["clear"] = ClearScreen;
+    func["ReadMe"] = Rreadme;
+    func["License"] = Rlicense;
 
     vector<string> att;
     string sym = "!~~ ";
@@ -134,147 +144,257 @@ int main()
             cout << sym;
         }
 
-    } while (InitCommand(att, input, func) == false);
+    } while (!InitCommand(att, input, func));
 
     return 0;
 }
-
+// Keven Paulino
+void Rreadme(vector<string> att)
+{
+    att.at(0) = "README.md";
+    ReadFile(att);
+}
+// Keven Paulino
+void Rlicense(vector<string> att)
+{
+    att.at(0) = "License.txt";
+    ReadFile(att);
+}
+// Help text
+// Keven Paulino
 string Help(string action)
 {
     map<string, string> help;
     help["hello"] = " * Function name *  No parameters\n";
-    help["Ndirec"] = " * Function name *  existing path ...\n";
-    help["Ddirec"] = " * Function name *  existing path ...\n";
-    help["Mdirec"] = " * Function name *  from path / to path ...\n";
-    help["Rdirec"] = " * Function name *  existing path / new name\n";
-    help["list"] = " * Function name *  No parameters\n";
-    cout << "/ - represents spaces\n";
+    help["Ndirec"] = " * Function name *  directory path ... \n";
+    help["Ddirec"] = " * Function name *  directory path ... \n";
+    help["Mdirec"] = " * Function name *  from path to path ...\n";
+    help["Rdirec"] = " * Function name *  directory path new name ...\n";
+    help["Cfile"] = " * Function name *  file path ...\n";
+    help["Rfile"] = " * Function name *  file path ...\n";
+    help["Ufile"] = " * Function name *  file path ...\n";
+    help["Dfile"] = " * Function name *  file path ...\n";
+    help["clear"] = " * Function name *  No parameters\n";
 
     return help.at(action);
 }
+
+// Directory functions
+// Keven Paulino
 void Hello(vector<string> att)
 {
-    cout << "Hello World\n";
+    cout << GREEN << "Hello World\n"
+         << RESET;
 }
+
+// Keven Paulino
 void NewDirectory(vector<string> att)
 {
-    // only path to new directory
     for (std::filesystem::path path : att)
     {
         path = path.make_preferred();
-        if (PathExists(path) == false && RootExists(path) == true)
+        if (!PathExists(path) && RootExists(path))
         {
             std::filesystem::create_directories(path);
+            cout << GREEN << "Created directory: " << path << RESET << "\n";
         }
-        else if (PathExists(path) == true)
+        else if (PathExists(path))
         {
-            cout << "The Directory: " << path << " already exists";
+            cout << YELLOW << "Directory already exists: " << path << RESET << "\n";
         }
         else
         {
-            cout << "The root path: " << path.root_path() << " doesnt exists";
+            cout << RED << "Root path does not exist: " << path.root_path() << RESET << "\n";
         }
     }
 }
+
+// Keven Paulino
 void DeleteDirectory(vector<string> att)
-{ // only path to existing directory
+{
     for (std::filesystem::path path : att)
     {
         path = path.make_preferred();
-        if (PathExists(path) == true)
+        if (PathExists(path))
         {
             std::filesystem::remove_all(path);
+            cout << GREEN << "Deleted directory: " << path << RESET << "\n";
         }
         else
         {
-            cout << "The Directory: " << path << "doesnt exists ";
+            cout << RED << "Directory does not exist: " << path << RESET << "\n";
         }
     }
-    cout << '\n';
 }
+
+// Keven Paulino
 void RenameDirectory(vector<string> att)
 {
-    // path to existing directory & new name
     std::filesystem::path oName;
     std::filesystem::path nName;
     if (att.size() % 2 == 1)
     {
-        cout << "Function needs an even number of arguments";
+        cout << RED << "Function needs an even number of arguments\n"
+             << RESET;
     }
     else
     {
         for (size_t i = 0; i < att.size(); i += 2)
         {
             oName = att.at(i);
-            nName = oName.parent_path();
-            nName += att.at(i + 1);
+            nName = oName.parent_path() / att.at(i + 1);
             oName = oName.make_preferred();
             nName = nName.make_preferred();
-            bool pathStat = (PathExists(oName) == true && PathExists(nName) == false);
 
-            if (pathStat == true)
+            if (PathExists(oName) && !PathExists(nName))
             {
                 try
                 {
                     std::filesystem::rename(oName, nName);
-                    cout << "Success ";
+                    cout << GREEN << "Renamed to: " << nName << RESET << "\n";
                 }
                 catch (const std::exception &e)
                 {
-                    cout << "ERROR: The name " << att.at(i + 1) << " is invalid" << '\n';
+                    cout << RED << "ERROR: Invalid name: " << att.at(i + 1) << RESET << "\n";
                 }
             }
-            else if (pathStat == false)
+            else
             {
-                cout << "ERROR";
+                cout << RED << "ERROR: Original not found or new name already exists\n"
+                     << RESET;
             }
         }
     }
 }
+
+// Keven Paulino
 void MoveDirectory(vector<string> att)
 {
-    // path to existing directory & new name
     std::filesystem::path fromPath;
     std::filesystem::path toPath;
+
     if (att.size() % 2 == 1)
     {
-        cout << "Function needs an even number of arguments";
+        cout << RED << "Function needs an even number of arguments\n"
+             << RESET;
     }
     else
     {
         for (size_t i = 0; i < att.size(); i += 2)
         {
             fromPath = att.at(i);
-            toPath = att.at(i + 1) + "/";
-            toPath += fromPath.filename();
+            toPath = att.at(i + 1) + "/" + fromPath.filename().string();
             fromPath = fromPath.make_preferred();
             toPath = toPath.make_preferred();
-            bool pathStat = (PathExists(fromPath) == true && PathExists(toPath) == false);
 
-            if (pathStat == true)
+            if (PathExists(fromPath) && !PathExists(toPath))
             {
                 try
                 {
                     std::filesystem::copy(fromPath, toPath, std::filesystem::copy_options::recursive);
                     std::filesystem::remove_all(fromPath);
-                    cout << "Successfully moved the directory";
+                    cout << GREEN << "Moved directory to: " << toPath << RESET << "\n";
                 }
-                catch (const std::exception &e)
+                catch (...)
                 {
-                    cout << "ERROR " << att.at(i + 1) << " doesnt exist" << '\n';
+                    cout << RED << "ERROR: Failed to move\n"
+                         << RESET;
                 }
             }
-            else if (pathStat == false)
+            else
             {
-                if (toPath == fromPath)
-                {
-                    cout << "ERROR - already in directory";
-                }
-                else
-                {
-                    cout << "ERROR - Invalid path " << (PathExists(fromPath) == true ? att.at(i + 1) : att.at(i));
-                }
+                cout << RED << "ERROR: Invalid from or to path\n"
+                     << RESET;
             }
         }
     }
+}
+
+// File functions
+// Pedro Arraiza
+void CreateFile(vector<string> att)
+{
+    for (const auto &path : att)
+    {
+        std::ofstream file(path);
+        if (file)
+        {
+            cout << GREEN << "Created file: " << path << RESET << "\n";
+        }
+        else
+        {
+            cout << RED << "Failed to create file: " << path << RESET << "\n";
+        }
+    }
+}
+
+// Pedro Arraiza
+void ReadFile(vector<string> att)
+{
+    for (const auto &path : att)
+    {
+        std::ifstream file(path);
+        if (file)
+        {
+            cout << YELLOW << "Reading file: " << path << RESET << "\n";
+            string line;
+            while (getline(file, line))
+            {
+                cout << line << "\n";
+            }
+        }
+        else
+        {
+            cout << RED << "Failed to read file: " << path << RESET << "\n";
+        }
+    }
+}
+
+// Pedro Arraiza
+void UpdateFile(vector<string> att)
+{
+    if (att.size() < 2)
+    {
+        cout << RED << "Need file path and content\n"
+             << RESET;
+        return;
+    }
+    std::ofstream file(att[0], std::ios::app);
+    if (file)
+    {
+        file << att[1] << "\n";
+        cout << GREEN << "Updated file: " << att[0] << RESET << "\n";
+    }
+    else
+    {
+        cout << RED << "Failed to update file: " << att[0] << RESET << "\n";
+    }
+}
+
+// Pedro Arraiza
+void DeleteFile(vector<string> att)
+{
+    for (const auto &path : att)
+    {
+        if (std::filesystem::remove(path))
+        {
+            cout << GREEN << "Deleted file: " << path << RESET << "\n";
+        }
+        else
+        {
+            cout << RED << "Failed to delete file: " << path << RESET << "\n";
+        }
+    }
+}
+
+// Clear screen
+// Pedro Arraiza
+void ClearScreen(vector<string> att)
+{
+// the compiler detects you're on a Windows system
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
 }
