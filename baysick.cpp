@@ -27,8 +27,8 @@ void ReadFile(vector<string> att);
 void UpdateFile(vector<string> att);
 void DeleteFile(vector<string> att);
 void ClearScreen(vector<string> att);
-void Rreadme(vector<string> att);
-void Rlicense(vector<string> att);
+void Readme(vector<string> att);
+void License(vector<string> att);
 string Help(string action);
 
 // Utility functions
@@ -129,8 +129,8 @@ int main()
     func["Ufile"] = UpdateFile;
     func["Dfile"] = DeleteFile;
     func["clear"] = ClearScreen;
-    func["readme"] = Rreadme;
-    func["license"] = Rlicense;
+    func["readme"] = Readme;
+    func["license"] = License;
 
     vector<string> att;
     string sym = "!~~ ";
@@ -150,14 +150,14 @@ int main()
     return 0;
 }
 // Keven Paulino
-void Rreadme(vector<string> att)
+void Readme(vector<string> att)
 {
     att.push_back("README.md");
     ReadFile(att);
 }
 
 // Keven Paulino
-void Rlicense(vector<string> att)
+void RLicense(vector<string> att)
 {
     att.push_back("LICENSE");
     ReadFile(att);
@@ -171,8 +171,8 @@ string Help(string action)
     help["hello"] = " * Function name *  No parameters\n";
     help["Ndirec"] = " * Function name *  directory path ... \n";
     help["Ddirec"] = " * Function name *  directory path ... \n";
-    help["Mdirec"] = " * Function name *  from path to path ...\n";
-    help["Rdirec"] = " * Function name *  directory path new name ...\n";
+    help["Mdirec"] = " * Function name *  from path , to path ...\n";
+    help["Rdirec"] = " * Function name *  directory path , new name ...\n";
     help["Cfile"] = " * Function name *  file path ...\n";
     help["Rfile"] = " * Function name *  file path ...\n";
     help["Ufile"] = " * Function name *  file path ...\n";
@@ -184,7 +184,6 @@ string Help(string action)
     return help.at(action);
 }
 
-// Directory functions
 // Keven Paulino
 void Hello(vector<string> att)
 {
@@ -192,6 +191,7 @@ void Hello(vector<string> att)
          << RESET;
 }
 
+// Directory functions
 // Keven Paulino
 void NewDirectory(vector<string> att)
 {
