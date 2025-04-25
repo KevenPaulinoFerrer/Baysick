@@ -9,15 +9,10 @@ using std::cin, std::cout, std::string, std::map, std::vector;
 
 void NewDirectory(vector<string> att);
 void DeleteDirectory(vector<string> att);
+void RenameDirectory(vector<string> att);
+void MoveDirectory(vector<string> att);
 void Hello(vector<string> att);
-
-string Help(string action)
-{
-    map<string, string> help;
-    help["hello"] = " * Function name * - No parameters\n";
-
-    return help.at(action);
-}
+string Help(string action);
 
 string SearchCommand(string &input)
 {
@@ -123,8 +118,8 @@ int main()
     func["hello"] = Hello;
     func["Ndirec"] = NewDirectory;
     func["Ddirec"] = DeleteDirectory;
+    func["Rdirec"] = RenameDirectory;
     func["Mdirec"] = Hello;
-    func["Rdirec"] = Hello;
 
     vector<string> att;
     string sym = "!~~ ";
@@ -144,6 +139,19 @@ int main()
     return 0;
 }
 
+string Help(string action)
+{
+    map<string, string> help;
+    help["hello"] = " * Function name *  No parameters\n";
+    help["Ndirec"] = " * Function name *  existing path ...\n";
+    help["Ddirec"] = " * Function name *  existing path ...\n";
+    help["Mdirec"] = " * Function name *  from path / to path ...\n";
+    help["Rdirec"] = " * Function name *  existing path / new name\n";
+    help["list"] = " * Function name *  No parameters\n";
+    cout << "/ - represents spaces\n";
+
+    return help.at(action);
+}
 void Hello(vector<string> att)
 {
     cout << "Hello World\n";
@@ -183,4 +191,90 @@ void DeleteDirectory(vector<string> att)
         }
     }
     cout << '\n';
+}
+void RenameDirectory(vector<string> att)
+{
+    // path to existing directory & new name
+    std::filesystem::path oName;
+    std::filesystem::path nName;
+    if (att.size() % 2 == 1)
+    {
+        cout << "Function needs an even number of arguments";
+    }
+    else
+    {
+        for (size_t i = 0; i < att.size(); i += 2)
+        {
+            oName = att.at(i);
+            nName = oName.parent_path();
+            nName += att.at(i + 1);
+            oName = oName.make_preferred();
+            nName = nName.make_preferred();
+            bool pathStat = (PathExists(oName) == true && PathExists(nName) == false);
+
+            if (pathStat == true)
+            {
+                try
+                {
+                    std::filesystem::rename(oName, nName);
+                    cout << "Success ";
+                }
+                catch (const std::exception &e)
+                {
+                    cout << "ERROR: The name " << att.at(i + 1) << " is invalid" << '\n';
+                }
+            }
+            else if (pathStat == false)
+            {
+                cout << "ERROR";
+            }
+        }
+    }
+}
+void MoveDirectory(vector<string> att)
+{
+    // path to existing directory & new name
+    std::filesystem::path fromPath;
+    std::filesystem::path toPath;
+    if (att.size() % 2 == 1)
+    {
+        cout << "Function needs an even number of arguments";
+    }
+    else
+    {
+        for (size_t i = 0; i < att.size(); i += 2)
+        {
+            fromPath = att.at(i);
+            toPath = att.at(i + 1) + "/";
+            toPath += fromPath.filename();
+            fromPath = fromPath.make_preferred();
+            toPath = toPath.make_preferred();
+            bool pathStat = (PathExists(fromPath) == true && PathExists(toPath) == false);
+
+            if (pathStat == true)
+            {
+                try
+                {
+                    std::filesystem::copy(fromPath, toPath, std::filesystem::copy_options::recursive);
+                    std::filesystem::remove_all(fromPath);
+                    cout << "Successfully moved the directory";
+                }
+                catch (const std::exception &e)
+                {
+                    cout << "ERROR " << att.at(i + 1) << " doesnt exist" << '\n';
+                }
+            }
+            else if (pathStat == false)
+            {
+                if (toPath == fromPath)
+                {
+                    cout << "ERROR - already in directory";
+                }
+                else
+                {
+                    cout << "ERROR - Invalid path " << (PathExists(fromPath) == true ? att.at(i + 1) : att.at(i));
+                }
+            }
+        }
+    }
 }
