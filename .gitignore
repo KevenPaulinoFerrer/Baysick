@@ -1,0 +1,6 @@
+# Ignore temporary or backup files
+*~
+*.tmp
+*.log
+# Ignore executable
+Baysick.exe
