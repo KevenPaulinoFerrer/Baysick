@@ -13,7 +13,10 @@ bash or powershell made with C++.
 ## Installation
 
 1. Clone the repository:
+
+```bash
    git clone https://github.com/KevenPaulinoFerrer/Baysick.git
+```
 
 ## Usage
 
