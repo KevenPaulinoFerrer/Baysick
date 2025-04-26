@@ -30,6 +30,7 @@ void ClearScreen(vector<string> att);
 void Readme(vector<string> att);
 void License(vector<string> att);
 string Help(string action);
+void ListCommands(vector<string> att);
 
 // Utility functions
 
@@ -131,6 +132,7 @@ int main()
     func["clear"] = ClearScreen;
     func["readme"] = Readme;
     func["license"] = License;
+    func["list"] = ListCommands;
 
     vector<string> att;
     string sym = "!~~ ";
@@ -180,10 +182,38 @@ string Help(string action)
     help["clear"] = " * Function name *  No parameters\n";
     help["readme"] = " * Function name *  No parameters\n";
     help["license"] = " * Function name *  No parameters\n";
+    help["list"] = " * Function name *  No parameters.\n";
 
     return help.at(action);
 }
 
+// Pedro Arraiza
+void ListCommands(vector<string> att)
+{
+    cout << BLUE << "Available commands:\n"
+         << RESET;
+
+    vector<std::pair<string, string>> commands = {
+        {"hello", " - print 'Hello World'"},
+        {"Ndirec", " - create directory"},
+        {"Ddirec", " - delete directory"},
+        {"Rdirec", " - rename directory"},
+        {"Mdirec", " - move directory"},
+        {"Cfile", " - create file"},
+        {"Rfile", " - read file"},
+        {"Ufile", " - update file"},
+        {"Dfile", " - delete file"},
+        {"clear", " - clear the screen"},
+        {"readme", " - show README.md"},
+        {"license", " - show LICENSE"},
+        {"list", " - list all commands"},
+        {"close", " - exit the program"}};
+
+    for (int i = 0; i < commands.size(); i++)
+    {
+        cout << GREEN << " - " << commands[i].first << RESET << commands[i].second << "\n";
+    }
+}
 // Keven Paulino
 void Hello(vector<string> att)
 {
