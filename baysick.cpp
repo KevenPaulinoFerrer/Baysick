@@ -33,7 +33,6 @@ string Help(string action);
 void ListCommands(vector<string> att);
 
 // Utility functions
-
 // Keven Paulino
 string SearchCommand(string &input)
 {
