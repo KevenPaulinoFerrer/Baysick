@@ -29,8 +29,8 @@ void DeleteFile(vector<string> att);
 void ClearScreen(vector<string> att);
 void Readme(vector<string> att);
 void License(vector<string> att);
-string Help(string action);
 void ListCommands(vector<string> att);
+string Help(string action);
 
 // Utility functions
 // Keven Paulino
