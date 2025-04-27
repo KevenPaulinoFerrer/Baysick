@@ -169,19 +169,19 @@ void License(vector<string> att)
 string Help(string action)
 {
     map<string, string> help;
-    help["hello"] = " * Function name *  No parameters\n";
-    help["Ndirec"] = " * Function name *  directory path ... \n";
-    help["Ddirec"] = " * Function name *  directory path ... \n";
-    help["Mdirec"] = " * Function name *  from path , to path ...\n";
-    help["Rdirec"] = " * Function name *  directory path , new name ...\n";
-    help["Cfile"] = " * Function name *  file path ...\n";
-    help["Rfile"] = " * Function name *  file path ...\n";
-    help["Ufile"] = " * Function name *  file path ...\n";
-    help["Dfile"] = " * Function name *  file path ...\n";
-    help["clear"] = " * Function name *  No parameters\n";
-    help["readme"] = " * Function name *  No parameters\n";
-    help["license"] = " * Function name *  No parameters\n";
-    help["list"] = " * Function name *  No parameters.\n";
+    help["hello"] = "* Function name *  No parameters\n";
+    help["Ndirec"] = "* Function name *  directory path ... \n";
+    help["Ddirec"] = "* Function name *  directory path ... \n";
+    help["Mdirec"] = "* Function name *  from path , to path ...\n";
+    help["Rdirec"] = "* Function name *  directory path , new name ...\n";
+    help["Cfile"] = "* Function name *  file path ...\n";
+    help["Rfile"] = "* Function name *  file path ...\n";
+    help["Ufile"] = "* Function name *  file path ...\n";
+    help["Dfile"] = "* Function name *  file path ...\n";
+    help["clear"] = "* Function name *  No parameters\n";
+    help["readme"] = "* Function name *  No parameters\n";
+    help["license"] = "* Function name *  No parameters\n";
+    help["list"] = "* Function name *  No parameters.\n";
 
     return help.at(action);
 }
