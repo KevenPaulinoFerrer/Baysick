@@ -46,7 +46,9 @@ string SearchCommand(string &input)
     input = input.substr(begin);
     size_t end = input.find_first_of(" ");
     if (end == string::npos)
+    {
         end = input.length();
+    }
 
     string command = input.substr(0, end);
     input.erase(0, end + 1);
@@ -97,8 +99,9 @@ bool InitCommand(vector<string> &att, string &input, map<string, std::function<v
 {
     string action = SearchCommand(input);
     if (action == "close")
+    {
         return true;
-
+    }
     bool funcStat = FuncExists(func, action);
     SearchAtt(att, input);
 
