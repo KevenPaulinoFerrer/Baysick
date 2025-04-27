@@ -202,7 +202,7 @@ void ListCommands(vector<string> att)
         {"Mdirec", " - move directory"},
         {"Cfile", " - create file"},
         {"Rfile", " - read file"},
-        {"Ufile", " - update file"},
+        {"Ufile", " - update file - if it doesnt exists creates it"},
         {"Dfile", " - delete file"},
         {"clear", " - clear the screen"},
         {"readme", " - show README.md"},
