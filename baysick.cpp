@@ -146,10 +146,6 @@ int main()
     {
         cout << sym;
         getline(cin, input);
-        if (input.find("close") == string::npos)
-        {
-            cout << sym;
-        }
 
     } while (!InitCommand(att, input, func));
 
