@@ -403,17 +403,21 @@ void ReadFile(vector<string> att)
 void UpdateFile(vector<string> att)
 {
     string text;
-    std::ofstream file(att[0], std::ios::app);
-    if (file)
+    for (std::filesystem::path p : att)
     {
-        cout << "Enter text:\n";
-        getline(cin, text);
-        file << text << "\n";
-        cout << GREEN << "Updated file: " << att[0] << RESET << "\n";
-    }
-    else
-    {
-        cout << RED << "ERROR: Failed to update file: " << att[0] << RESET << "\n";
+        p = p.make_preferred();
+        std::ofstream file(p, std::ios::app);
+        if (file)
+        {
+            cout << "Enter text:\n";
+            getline(cin, text);
+            file << text << "\n";
+            cout << GREEN << "Updated file: " << p << RESET << "\n";
+        }
+        else
+        {
+            cout << RED << "ERROR: Failed to update file: " << p << RESET << "\n";
+        }
     }
 }
 
