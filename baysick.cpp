@@ -402,16 +402,13 @@ void ReadFile(vector<string> att)
 // Pedro Arraiza
 void UpdateFile(vector<string> att)
 {
-    if (att.size() < 2)
-    {
-        cout << RED << "ERROR: Need file path and content\n"
-             << RESET;
-        return;
-    }
+    string text;
     std::ofstream file(att[0], std::ios::app);
     if (file)
     {
-        file << att[1] << "\n";
+        cout << "Enter text:\n";
+        getline(cin, text);
+        file << text << "\n";
         cout << GREEN << "Updated file: " << att[0] << RESET << "\n";
     }
     else
