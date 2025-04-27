@@ -21,11 +21,15 @@ bash or powershell made with C++.
 ## Usage
 
 First utilize the command "list" to view all the available functions.
+
 ![list of functions](list.png)
+
 Then use the attribute "help" after the command to view how to utilize the
 command.
+
 ![help text](helptext.png)
-Ndirect being the command and help the attribute.
+
+Ndirect being the command and help the argument.
 
 ## Features
 
