@@ -58,13 +58,14 @@ string SearchCommand(string &input)
 // Keven Paulino
 void SearchAtt(vector<string> &att, string &input)
 {
-    for (size_t i = 1; i < 5; i++)
+    do
     {
         if (!input.empty())
         {
             att.push_back(SearchCommand(input));
         }
-    }
+
+    } while (!input.empty());
 }
 
 // Keven Paulino
