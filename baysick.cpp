@@ -140,6 +140,8 @@ int main()
     string sym = "!~~ ";
     string input;
 
+    cout << sym;
+    Readme(att);
     do
     {
         cout << sym;
